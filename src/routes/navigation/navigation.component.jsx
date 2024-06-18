@@ -2,7 +2,7 @@
 import { Outlet } from "react-router-dom";
 
 // imports from this project
-import { ReactComponent as Logo } from "../../assets/logo.svg";
+import logo from "../../assets/logo.png";
 import {
   LogoContainer,
   NavLinks,
@@ -15,11 +15,11 @@ const Navigation = () => {
     <div>
       <NavigationContainer>
         <LogoContainer to="/">
-          <Logo />
+          <img src={logo} alt="logo" />
         </LogoContainer>
 
         <NavLinks>
-          <NavLink to="/">Home</NavLink>
+          {/* <NavLink to="/">Home</NavLink> */}
           <NavLink to="/products">Products</NavLink>
           <NavLink to="/suppliers">Suppliers</NavLink>
         </NavLinks>
