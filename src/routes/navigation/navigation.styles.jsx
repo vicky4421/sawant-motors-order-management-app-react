@@ -30,7 +30,8 @@ export const NavLink = styled(Link)`
   margin: 2rem;
   cursor: pointer;
   font-size: 2rem;
+  letter-spacing: 0.5px;
   text-decoration: none;
-  color: black;
+  color: blue;
   font-weight: bold;
 `;
