@@ -32,6 +32,6 @@ export const NavLink = styled(Link)`
   font-size: 2rem;
   letter-spacing: 0.5px;
   text-decoration: none;
-  color: blue;
+  color: black;
   font-weight: bold;
 `;
