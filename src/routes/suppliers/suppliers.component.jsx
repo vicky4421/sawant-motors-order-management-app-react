@@ -19,6 +19,7 @@ import {
   ContactHolderDiv,
   ContactDiv,
   SupplierNameLogoContainer,
+  SearchBarContainer,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import { saveSupplier } from "../../store/supplier/supplier.slice";
@@ -32,6 +33,7 @@ const Suppliers = () => {
   const [supplierName, setSupplierName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [expanded, setExpanded] = useState({ [supplierName]: false });
 
   // redux state
@@ -66,6 +68,15 @@ const Suppliers = () => {
       setAlternateNumber(value);
     }
   };
+
+  // handle search
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredSuppliers = suppliers.filter((supplier) =>
+    supplier.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // handle submit
   const handlesubmit = (event) => {
@@ -150,7 +161,18 @@ const Suppliers = () => {
       <SupplierContainer>
         <SupplierListContainer>
           <h3>Suppliers</h3>
-          {suppliers.map((supplier) => (
+          <SearchBarContainer>
+            <FormInput
+              type="text"
+              name="searchTerm"
+              value={searchTerm}
+              onChange={handleSearch}
+              label="Search Supplier"
+              required
+            />
+          </SearchBarContainer>
+          {suppliers.length === 0 && <p>No suppliers found</p>}
+          {filteredSuppliers.map((supplier) => (
             <SupplierDiv key={supplier._id}>
               <SupplierNameLogoContainer>
                 <SupplierName>{supplier.name}</SupplierName>
