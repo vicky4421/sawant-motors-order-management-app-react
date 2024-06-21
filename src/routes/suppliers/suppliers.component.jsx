@@ -38,9 +38,9 @@ const Suppliers = () => {
   const dispatch = useDispatch();
 
   const toggleExpanded = (supplierName) => {
-    setExpanded((prevExpandedMap) => ({
-      ...prevExpandedMap,
-      [supplierName]: !prevExpandedMap[supplierName],
+    setExpanded((prevExpanded) => ({
+      ...prevExpanded,
+      [supplierName]: !prevExpanded[supplierName],
     }));
   };
 
