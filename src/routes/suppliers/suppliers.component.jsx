@@ -16,6 +16,9 @@ import {
   SupplierName,
   SupplierDiv,
   LogoContainerDiv,
+  ContactHolderDiv,
+  ContactDiv,
+  SupplierNameLogoContainer,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import { saveSupplier } from "../../store/supplier/supplier.slice";
@@ -37,6 +40,7 @@ const Suppliers = () => {
   const suppliers = useSelector((state) => state.supplier.suppliers);
   const dispatch = useDispatch();
 
+  // toggle expanded state
   const toggleExpanded = (supplierName) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
@@ -148,24 +152,42 @@ const Suppliers = () => {
           <h3>Suppliers</h3>
           {suppliers.map((supplier) => (
             <SupplierDiv key={supplier._id}>
-              <SupplierName>{supplier.name}</SupplierName>
-              <LogoContainerDiv>
-                {expanded[supplier.name] ? (
-                  <img
-                    src={arrowUp}
-                    alt="arrow-up"
-                    onClick={() => toggleExpanded(supplier.name)}
-                    height={20}
-                  />
-                ) : (
-                  <img
-                    src={arrowDown}
-                    alt="arrow-down"
-                    onClick={() => toggleExpanded(supplier.name)}
-                    height={20}
-                  />
-                )}
-              </LogoContainerDiv>
+              <SupplierNameLogoContainer>
+                <SupplierName>{supplier.name}</SupplierName>
+                <LogoContainerDiv>
+                  {expanded[supplier.name] ? (
+                    <img
+                      src={arrowUp}
+                      alt="arrow-up"
+                      onClick={() => toggleExpanded(supplier.name)}
+                      height={20}
+                    />
+                  ) : (
+                    <img
+                      src={arrowDown}
+                      alt="arrow-down"
+                      onClick={() => toggleExpanded(supplier.name)}
+                      height={20}
+                    />
+                  )}
+                </LogoContainerDiv>
+              </SupplierNameLogoContainer>
+              {expanded[supplier.name] && (
+                <ContactHolderDiv>
+                  <ContactDiv>
+                    <p style={{ marginRight: "5rem" }}>Whatsapp Number</p>
+                    <p style={{ color: "blue" }}>{supplier.whatsappNumber}</p>
+                  </ContactDiv>
+                  {supplier.alternateNumber && (
+                    <ContactDiv>
+                      <p style={{ marginRight: "5rem" }}>Alternate Number</p>
+                      <p style={{ color: "blue" }}>
+                        {supplier.alternateNumber}
+                      </p>
+                    </ContactDiv>
+                  )}
+                </ContactHolderDiv>
+              )}
             </SupplierDiv>
           ))}
         </SupplierListContainer>
