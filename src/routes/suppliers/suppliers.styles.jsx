@@ -15,6 +15,15 @@ export const SupplierListContainer = styled.div`
   padding: 0 1rem;
 `;
 
+export const SearchBarContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  margin-bottom: 2rem;
+`;
+
 export const SupplierDiv = styled.div`
   display: flex;
   flex-direction: column;
