@@ -1,6 +1,9 @@
 // imports from third party libraries
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/styles.css";
 
 // imports from project
 import {
@@ -10,13 +13,14 @@ import {
   AddSupplierForm,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
-import Button from "../../components/button/button.component";
 import { saveSupplier } from "../../store/supplier/supplier.slice";
+import { resetError } from "../../store/supplier/supplier.slice";
 
 const Suppliers = () => {
   const [supplierName, setSupplierName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
+  const error = useSelector((state) => state.supplier.error);
   const dispatch = useDispatch();
 
   // reset form fields
@@ -43,22 +47,40 @@ const Suppliers = () => {
     event.preventDefault();
 
     // validate form
-    if (!supplierName || !whatsappNumber) {
-      alert("Please enter supplier name and whatsapp number");
-      return;
-    } else if (whatsappNumber.length !== 10) {
-      alert("Please enter valid whatsapp number");
-      return;
-    } else if (whatsappNumber === alternateNumber) {
-      alert("Please enter different alternate whatsapp number");
+    if (!whatsappNumber) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please enter whatsapp number",
+        confirmButtonColor: "#3a3a3a",
+      });
       return;
     }
-
-    // // create phone number list
-    // const phoneNumberList = [
-    //   whatsappNumber,
-    //   alternateNumber && alternateNumber.trim() ? alternateNumber : "", // Only add non-empty alternate number
-    // ];
+    if (!supplierName) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please enter supplier name",
+        confirmButtonColor: "#3a3a3a",
+      });
+      return;
+    } else if (whatsappNumber.length !== 10) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please enter valid whatsapp number",
+        confirmButtonColor: "#3a3a3a",
+      });
+      return;
+    } else if (whatsappNumber === alternateNumber) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please enter different alternate whatsapp number",
+        confirmButtonColor: "#3a3a3a",
+      });
+      return;
+    }
 
     // create supplier object
     const supplier = {
@@ -67,14 +89,33 @@ const Suppliers = () => {
       alternateNumber: alternateNumber ? alternateNumber : null,
     };
 
-    console.log(supplier);
-
     // dispatch save supplier
     dispatch(saveSupplier(supplier));
 
     // reset form
     resetFormFields();
   };
+
+  useEffect(() => {
+    if (error) {
+      if (error === "Request failed with status code 409") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Contact already exists!",
+          confirmButtonColor: "#3a3a3a",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error,
+          confirmButtonColor: "#3a3a3a",
+        });
+      }
+      dispatch(resetError());
+    }
+  }, [error, dispatch]);
 
   return (
     <div>
@@ -106,7 +147,14 @@ const Suppliers = () => {
               name="alternateNumber"
               value={alternateNumber}
             />
-            <Button type="submit">Add</Button>
+            <AwesomeButton
+              type="secondary"
+              size="large"
+              className="aws-btn"
+              onPress={handlesubmit}
+            >
+              Add
+            </AwesomeButton>
           </AddSupplierForm>
         </FormContainer>
       </SupplierContainer>
