@@ -13,18 +13,36 @@ import {
   SupplierContainer,
   AddSupplierForm,
   SubmitButton,
+  SupplierName,
+  SupplierDiv,
+  LogoContainerDiv,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import { saveSupplier } from "../../store/supplier/supplier.slice";
+import { getSupplier } from "../../store/supplier/supplier.slice";
 import { resetError } from "../../store/supplier/supplier.slice";
+import arrowDown from "../../assets/arrow-down.png";
+import arrowUp from "../../assets/arrow-up.png";
 
 const Suppliers = () => {
+  // local state
   const [supplierName, setSupplierName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
+  const [expanded, setExpanded] = useState({ [supplierName]: false });
+
+  // redux state
   const error = useSelector((state) => state.supplier.error);
   const isLoading = useSelector((state) => state.supplier.isLoading);
+  const suppliers = useSelector((state) => state.supplier.suppliers);
   const dispatch = useDispatch();
+
+  const toggleExpanded = (supplierName) => {
+    setExpanded((prevExpandedMap) => ({
+      ...prevExpandedMap,
+      [supplierName]: !prevExpandedMap[supplierName],
+    }));
+  };
 
   // reset form fields
   const resetFormFields = () => {
@@ -119,13 +137,41 @@ const Suppliers = () => {
     }
   }, [error, dispatch]);
 
+  useEffect(() => {
+    dispatch(getSupplier());
+  }, [dispatch]);
+
   return (
     <div>
       <SupplierContainer>
-        <SupplierListContainer></SupplierListContainer>
+        <SupplierListContainer>
+          <h3>Suppliers</h3>
+          {suppliers.map((supplier) => (
+            <SupplierDiv key={supplier._id}>
+              <SupplierName>{supplier.name}</SupplierName>
+              <LogoContainerDiv>
+                {expanded[supplier.name] ? (
+                  <img
+                    src={arrowUp}
+                    alt="arrow-up"
+                    onClick={() => toggleExpanded(supplier.name)}
+                    height={20}
+                  />
+                ) : (
+                  <img
+                    src={arrowDown}
+                    alt="arrow-down"
+                    onClick={() => toggleExpanded(supplier.name)}
+                    height={20}
+                  />
+                )}
+              </LogoContainerDiv>
+            </SupplierDiv>
+          ))}
+        </SupplierListContainer>
         <FormContainer>
-          <h3>Add Supplier</h3>
           <AddSupplierForm onSubmit={handlesubmit}>
+            <h3>Add Supplier</h3>
             <FormInput
               label="Supplier Name"
               type="text"
