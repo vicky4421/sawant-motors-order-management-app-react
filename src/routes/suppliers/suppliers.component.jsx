@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
+import { PropagateLoader } from "react-spinners";
 
 // imports from project
 import {
@@ -11,6 +12,7 @@ import {
   FormContainer,
   SupplierContainer,
   AddSupplierForm,
+  SubmitButton,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import { saveSupplier } from "../../store/supplier/supplier.slice";
@@ -21,6 +23,7 @@ const Suppliers = () => {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
   const error = useSelector((state) => state.supplier.error);
+  const isLoading = useSelector((state) => state.supplier.isLoading);
   const dispatch = useDispatch();
 
   // reset form fields
@@ -47,20 +50,19 @@ const Suppliers = () => {
     event.preventDefault();
 
     // validate form
-    if (!whatsappNumber) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please enter whatsapp number",
-        confirmButtonColor: "#3a3a3a",
-      });
-      return;
-    }
     if (!supplierName) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Please enter supplier name",
+        confirmButtonColor: "#3a3a3a",
+      });
+      return;
+    } else if (!whatsappNumber) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please enter whatsapp number",
         confirmButtonColor: "#3a3a3a",
       });
       return;
@@ -147,14 +149,20 @@ const Suppliers = () => {
               name="alternateNumber"
               value={alternateNumber}
             />
-            <AwesomeButton
-              type="secondary"
-              size="large"
-              className="aws-btn"
-              onPress={handlesubmit}
-            >
-              Add
-            </AwesomeButton>
+            <SubmitButton>
+              {isLoading ? (
+                <PropagateLoader color="#36d7b7" loading={isLoading} />
+              ) : (
+                <AwesomeButton
+                  type="secondary"
+                  size="large"
+                  className="aws-btn"
+                  onPress={handlesubmit}
+                >
+                  Add
+                </AwesomeButton>
+              )}
+            </SubmitButton>
           </AddSupplierForm>
         </FormContainer>
       </SupplierContainer>

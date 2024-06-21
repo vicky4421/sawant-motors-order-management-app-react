@@ -36,3 +36,12 @@ export const AddSupplierForm = styled.form`
   align-items: center;
   width: 100%;
 `;
+
+export const SubmitButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+`;
