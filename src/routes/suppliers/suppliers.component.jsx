@@ -74,6 +74,7 @@ const Suppliers = () => {
     setSearchTerm(event.target.value);
   };
 
+  // filter suppliers
   const filteredSuppliers = suppliers.filter((supplier) =>
     supplier.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
