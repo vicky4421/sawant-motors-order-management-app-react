@@ -13,15 +13,7 @@ const initialState = {
   error: "",
 };
 
-export const saveSupplier = createAsyncThunk(
-  "supplier/saveSupplier",
-  async (supplier) => {
-    return await axios
-      .post("http://localhost:9000/supplier", supplier)
-      .then((response) => response.data);
-  }
-);
-
+// async actions
 export const getSupplier = createAsyncThunk(
   "supplier/getSupplier",
   async () => {
@@ -31,6 +23,32 @@ export const getSupplier = createAsyncThunk(
   }
 );
 
+// async actions
+export const saveSupplier = createAsyncThunk(
+  "supplier/saveSupplier",
+  async (supplier, { dispatch }) => {
+    const response = await axios
+      .post("http://localhost:9000/supplier", supplier)
+      .then((response) => response.data);
+    dispatch(getSupplier());
+    return response;
+  }
+);
+
+// async actions
+export const deleteSupplier = createAsyncThunk(
+  "supplier/deleteSupplier",
+  async (supplierId, { dispatch }) => {
+    const response = await axios
+      .delete(`http://localhost:9000/supplier/delete/${supplierId}`)
+      .then((response) => response.data);
+    console.log("Supplier id: ", supplierId);
+    dispatch(getSupplier());
+    return response;
+  }
+);
+
+// slice
 const supplierSlice = createSlice({
   name: "supplier",
   initialState,
@@ -55,6 +73,8 @@ const supplierSlice = createSlice({
           title: "Supplier saved successfully",
           text: "success",
           confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
         });
       })
       .addCase(saveSupplier.rejected, (state, action) => {
@@ -64,7 +84,6 @@ const supplierSlice = createSlice({
         state.alternateNumber = "";
         state.error = action.error.message;
       })
-
       .addCase(getSupplier.pending, (state) => {
         state.isLoading = true;
       })
@@ -76,9 +95,34 @@ const supplierSlice = createSlice({
         state.isLoading = false;
         state.suppliers = [];
         state.error = action.error.message;
+      })
+      .addCase(deleteSupplier.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteSupplier.fulfilled, (state, action) => {
+        const supplierId = action.payload.id;
+        state.isLoading = false;
+        state.suppliers = state.suppliers.filter(
+          (supplier) => supplier.id !== supplierId
+        );
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Supplier deleted successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(deleteSupplier.rejected, (state, action) => {
+        state.isLoading = false;
+        state.suppliers = [];
+        state.error = action.error.message;
       });
   },
 });
 
+// export actions
 export const { resetError } = supplierSlice.actions;
 export default supplierSlice.reducer;
