@@ -21,6 +21,7 @@ import {
   ContactDiv,
   SupplierNameLogoContainer,
   SearchBarContainer,
+  SupplierTabContainer,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import nothingHere from "../../assets/nothing-here.gif";
@@ -323,92 +324,104 @@ const Suppliers = () => {
               onChange={handleSearch}
               label="Search Supplier"
               required
+              style={{ width: "90%" }}
             />
+            {searchTerm && (
+              <img
+                src={crosspng}
+                alt="add"
+                height={20}
+                style={{ padding: "1rem", cursor: "pointer" }}
+                onClick={() => setSearchTerm("")}
+              />
+            )}
           </SearchBarContainer>
-          {isLoading ? (
-            <HashLoader color="#36d7b7" loading={isLoading} size={150} />
-          ) : (
-            <>
-              {suppliers.length === 0 && (
-                <img src={nothingHere} alt="nothing here" />
-              )}
-              {sortedSuppliers.map((supplier) => (
-                <SupplierDiv key={supplier.id}>
-                  <SupplierNameLogoContainer>
-                    <SupplierName>{supplier.name}</SupplierName>
-                    <LogoContainerDiv>
-                      <img
-                        src={edit}
-                        alt="edit"
-                        height={20}
-                        style={{ padding: "1rem", cursor: "pointer" }}
-                        onClick={() => handleEdit(supplier.id)}
-                      />
-                      <img
-                        src={trashpng}
-                        alt="delete"
-                        height={20}
-                        style={{ padding: "1rem", cursor: "pointer" }}
-                        onClick={() => handleDelete(supplier.id)}
-                      />
-                      {expanded[supplier.id] ? (
+          <SupplierTabContainer>
+            {isLoading ? (
+              <HashLoader color="#36d7b7" loading={isLoading} size={150} />
+            ) : (
+              <>
+                {suppliers.length === 0 && (
+                  <img src={nothingHere} alt="nothing here" />
+                )}
+                {sortedSuppliers.map((supplier) => (
+                  <SupplierDiv key={supplier.id}>
+                    <SupplierNameLogoContainer>
+                      <SupplierName>{supplier.name}</SupplierName>
+                      <LogoContainerDiv>
                         <img
-                          src={arrow}
-                          alt="arrow-up"
-                          onClick={() => toggleExpanded(supplier.id)}
+                          src={edit}
+                          alt="edit"
                           height={20}
-                          style={{
-                            padding: "1rem",
-                            cursor: "pointer",
-                            rotate: "-90deg",
-                          }}
+                          style={{ padding: "1rem", cursor: "pointer" }}
+                          onClick={() => handleEdit(supplier.id)}
                         />
-                      ) : (
                         <img
-                          src={arrow}
-                          alt="arrow-down"
-                          onClick={() => toggleExpanded(supplier.id)}
+                          src={trashpng}
+                          alt="delete"
                           height={20}
-                          style={{
-                            padding: "1rem",
-                            cursor: "pointer",
-                            rotate: "90deg",
-                          }}
+                          style={{ padding: "1rem", cursor: "pointer" }}
+                          onClick={() => handleDelete(supplier.id)}
                         />
-                      )}
-                    </LogoContainerDiv>
-                  </SupplierNameLogoContainer>
-                  {expanded[supplier.id] && (
-                    <ContactHolderDiv>
-                      <ContactDiv>
-                        <p style={{ marginRight: "5rem" }}>Whatsapp Number</p>
-                        <p style={{ color: "blue" }}>
-                          {supplier.whatsappNumber}
-                        </p>
-                      </ContactDiv>
-                      {supplier.alternateNumber && (
-                        <ContactDiv>
-                          <p style={{ marginRight: "5rem" }}>
-                            Alternate Number
-                          </p>
-                          <p style={{ color: "blue" }}>
-                            {supplier.alternateNumber}
-                          </p>
+                        {expanded[supplier.id] ? (
                           <img
-                            src={crosspng}
-                            alt="remove"
+                            src={arrow}
+                            alt="arrow-up"
+                            onClick={() => toggleExpanded(supplier.id)}
                             height={20}
-                            style={{ marginLeft: "1rem", cursor: "pointer" }}
-                            onClick={() => handleRemoveNumber(supplier)}
+                            style={{
+                              padding: "1rem",
+                              cursor: "pointer",
+                              rotate: "-90deg",
+                            }}
                           />
+                        ) : (
+                          <img
+                            src={arrow}
+                            alt="arrow-down"
+                            onClick={() => toggleExpanded(supplier.id)}
+                            height={20}
+                            style={{
+                              padding: "1rem",
+                              cursor: "pointer",
+                              rotate: "90deg",
+                            }}
+                          />
+                        )}
+                      </LogoContainerDiv>
+                    </SupplierNameLogoContainer>
+                    {expanded[supplier.id] && (
+                      <ContactHolderDiv>
+                        <ContactDiv>
+                          <p style={{ marginRight: "5rem" }}>Whatsapp Number</p>
+                          <p style={{ color: "blue" }}>
+                            {supplier.whatsappNumber}
+                          </p>
                         </ContactDiv>
-                      )}
-                    </ContactHolderDiv>
-                  )}
-                </SupplierDiv>
-              ))}
-            </>
-          )}
+                        {supplier.alternateNumber && (
+                          <ContactDiv>
+                            <p style={{ marginRight: "5rem" }}>
+                              Alternate Number
+                            </p>
+                            <p style={{ color: "blue" }}>
+                              {supplier.alternateNumber}
+                            </p>
+                            <img
+                              src={crosspng}
+                              alt="remove"
+                              height={20}
+                              style={{ marginLeft: "1rem", cursor: "pointer" }}
+                              onClick={() => handleRemoveNumber(supplier)}
+                            />
+                          </ContactDiv>
+                        )}
+                      </ContactHolderDiv>
+                    )}
+                  </SupplierDiv>
+                ))}
+              </>
+            )}
+          </SupplierTabContainer>
         </SupplierListContainer>
         <FormContainer>
           <AddSupplierForm onSubmit={handlesubmit}>
