@@ -27,12 +27,15 @@ import nothingHere from "../../assets/nothing-here.gif";
 import trashpng from "../../assets/trash.png";
 import arrow from "../../assets/arrow.png";
 import edit from "../../assets/edit.png";
+import crosspng from "../../assets/cross.png";
 
 // imports from this project state
 import { saveSupplier } from "../../store/supplier/supplier.slice";
 import { getSupplier } from "../../store/supplier/supplier.slice";
 import { resetError } from "../../store/supplier/supplier.slice";
 import { deleteSupplier } from "../../store/supplier/supplier.slice";
+import { updateSupplier } from "../../store/supplier/supplier.slice";
+import { updateContact } from "../../store/supplier/supplier.slice";
 
 const Suppliers = () => {
   // local state
@@ -49,14 +52,6 @@ const Suppliers = () => {
 
   // const [expanded, setExpanded] = useState({ [supplierName]: false });
   const [expanded, setExpanded] = useState({});
-
-  // toggle expanded state
-  // const toggleExpanded = (supplierName) => {
-  //   setExpanded((prevExpanded) => ({
-  //     ...prevExpanded,
-  //     [supplierName]: !prevExpanded[supplierName],
-  //   }));
-  // };
 
   const toggleExpanded = (supplierId) => {
     setExpanded((prevExpanded) => ({
@@ -189,6 +184,94 @@ const Suppliers = () => {
     });
   };
 
+  // handle edit
+  const handleEdit = async (supplierId) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Edit Supplier",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Supplier Name">
+        <input id="swal-input2" class="swal2-input" placeholder="Whatsapp Number"> 
+        <input id="swal-input3" class="swal2-input" placeholder="Alternate Number">
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+          document.getElementById("swal-input3").value,
+        ];
+      },
+    });
+
+    if (formValues) {
+      // validate form
+      if (!formValues[0] && !formValues[1] && !formValues[2]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please enter supplier name and whatsapp number",
+          confirmButtonColor: "#3a3a3a",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+      if (formValues[1] && formValues[1].length !== 10) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please enter valid whatsapp number",
+          confirmButtonColor: "#3a3a3a",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+      if (formValues[2] && formValues[2].length !== 10) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please enter valid whatsapp number",
+          confirmButtonColor: "#3a3a3a",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+      if (formValues[1] && formValues[2] && formValues[1] === formValues[2]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please enter different alternate and whatsapp number",
+          confirmButtonColor: "#3a3a3a",
+          timer: 3000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+
+      const supplier = {
+        id: supplierId,
+        name: formValues[0],
+        whatsappNumber: formValues[1],
+        alternateNumber: formValues[2],
+      };
+
+      dispatch(updateSupplier(supplier));
+    }
+  };
+
+  // handle remove number
+  const handleRemoveNumber = (newSupplier) => {
+    const supplier = {
+      id: newSupplier.id,
+      name: newSupplier.name,
+      whatsappNumber: newSupplier.whatsappNumber,
+      alternateNumber: null,
+    };
+    dispatch(updateContact(supplier));
+  };
+
   useEffect(() => {
     if (error) {
       if (
@@ -253,6 +336,7 @@ const Suppliers = () => {
                         alt="edit"
                         height={20}
                         style={{ padding: "1rem", cursor: "pointer" }}
+                        onClick={() => handleEdit(supplier.id)}
                       />
                       <img
                         src={trashpng}
@@ -304,6 +388,13 @@ const Suppliers = () => {
                           <p style={{ color: "blue" }}>
                             {supplier.alternateNumber}
                           </p>
+                          <img
+                            src={crosspng}
+                            alt="remove"
+                            height={20}
+                            style={{ marginLeft: "1rem", cursor: "pointer" }}
+                            onClick={() => handleRemoveNumber(supplier)}
+                          />
                         </ContactDiv>
                       )}
                     </ContactHolderDiv>
@@ -359,5 +450,4 @@ const Suppliers = () => {
     </div>
   );
 };
-
 export default Suppliers;
