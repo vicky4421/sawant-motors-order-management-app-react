@@ -53,6 +53,7 @@ const Suppliers = () => {
   // const [expanded, setExpanded] = useState({ [supplierName]: false });
   const [expanded, setExpanded] = useState({});
 
+  // toggle expanded
   const toggleExpanded = (supplierId) => {
     setExpanded((prevExpanded) => ({
       ...prevExpanded,
@@ -87,6 +88,11 @@ const Suppliers = () => {
   // filter suppliers
   const filteredSuppliers = suppliers.filter((supplier) =>
     supplier.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // sort suppliers
+  const sortedSuppliers = filteredSuppliers.sort((a, b) =>
+    a.name.localeCompare(b.name)
   );
 
   // handle submit
@@ -326,7 +332,7 @@ const Suppliers = () => {
               {suppliers.length === 0 && (
                 <img src={nothingHere} alt="nothing here" />
               )}
-              {filteredSuppliers.map((supplier) => (
+              {sortedSuppliers.map((supplier) => (
                 <SupplierDiv key={supplier.id}>
                   <SupplierNameLogoContainer>
                     <SupplierName>{supplier.name}</SupplierName>
