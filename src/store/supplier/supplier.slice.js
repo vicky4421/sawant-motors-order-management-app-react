@@ -13,7 +13,7 @@ const initialState = {
   error: "",
 };
 
-// async actions
+// async get all suppliers actions
 export const getSupplier = createAsyncThunk(
   "supplier/getSupplier",
   async () => {
@@ -23,7 +23,7 @@ export const getSupplier = createAsyncThunk(
   }
 );
 
-// async actions
+// async save supplier actions
 export const saveSupplier = createAsyncThunk(
   "supplier/saveSupplier",
   async (supplier, { dispatch }) => {
@@ -35,7 +35,7 @@ export const saveSupplier = createAsyncThunk(
   }
 );
 
-// async actions
+// async delete supplier actions
 export const deleteSupplier = createAsyncThunk(
   "supplier/deleteSupplier",
   async (supplierId, { dispatch }) => {
@@ -43,6 +43,30 @@ export const deleteSupplier = createAsyncThunk(
       .delete(`http://localhost:9000/supplier/delete/${supplierId}`)
       .then((response) => response.data);
     console.log("Supplier id: ", supplierId);
+    dispatch(getSupplier());
+    return response;
+  }
+);
+
+// async update supplier actions
+export const updateSupplier = createAsyncThunk(
+  "supplier/updateSupplier",
+  async (supplier, { dispatch }) => {
+    const response = await axios
+      .put("http://localhost:9000/supplier", supplier)
+      .then((response) => response.data);
+    dispatch(getSupplier());
+    return response;
+  }
+);
+
+// async update contact actions
+export const updateContact = createAsyncThunk(
+  "supplier/updateContact",
+  async (supplier, { dispatch }) => {
+    const response = await axios
+      .put("http://localhost:9000/supplier/updateContact", supplier)
+      .then((response) => response.data);
     dispatch(getSupplier());
     return response;
   }
@@ -118,6 +142,50 @@ const supplierSlice = createSlice({
       .addCase(deleteSupplier.rejected, (state, action) => {
         state.isLoading = false;
         state.suppliers = [];
+        state.error = action.error.message;
+      })
+      .addCase(updateSupplier.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateSupplier.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.name = action.payload.name;
+        state.whatsappNumber = action.payload.whatsappNumber;
+        state.alternateNumber = action.payload.alternateNumber;
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Supplier updated successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(updateSupplier.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateContact.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateContact.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.name = action.payload.name;
+        state.whatsappNumber = action.payload.whatsappNumber;
+        state.alternateNumber = action.payload.alternateNumber;
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Contact updated successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(updateContact.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.error.message;
       });
   },
