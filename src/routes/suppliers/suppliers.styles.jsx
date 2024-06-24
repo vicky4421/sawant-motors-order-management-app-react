@@ -5,6 +5,7 @@ export const SupplierContainer = styled.div`
   flex-direction: row;
   width: 100%;
   margin-bottom: 2rem;
+  max-height: 100vh;
 `;
 
 export const SupplierListContainer = styled.div`
@@ -22,6 +23,21 @@ export const SearchBarContainer = styled.div`
   justify-content: center;
   width: 70%;
   margin-bottom: 2rem;
+`;
+
+export const SupplierTabContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 1rem;
+  max-height: 50vh;
+  overflow-y: scroll;
+
+  /* hide scrollbar  */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const SupplierDiv = styled.div`
