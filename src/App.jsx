@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./routes/home/home.component";
 import Products from "./routes/products/products.component";
 import Suppliers from "./routes/suppliers/suppliers.component";
+import Order from "./routes/order/order.component";
 import "./App.css";
 import Navigation from "./routes/navigation/navigation.component";
 
@@ -13,6 +14,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />} />
+        <Route path="order" element={<Order />} />
         <Route path="products" element={<Products />} />
         <Route path="suppliers" element={<Suppliers />} />
       </Route>
