@@ -74,7 +74,7 @@ const Suppliers = () => {
   // handle change
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "ContentName") {
+    if (name === "supplierName") {
       setSupplierName(value);
     } else if (name === "whatsappNumber") {
       setWhatsappNumber(value);
