@@ -14,11 +14,11 @@ import {
   ContentContainer,
   AddContentForm,
   SubmitButton,
-  ContentName,
   ContentDiv,
   LogoContainerDiv,
   ContactHolderDiv,
   ContactDiv,
+  ContentName,
   ContentNameLogoContainer,
   ContentSearchBarContainer,
   ContentTabContainer,
@@ -40,7 +40,7 @@ import { updateContact } from "../../store/supplier/supplier.slice";
 
 const Suppliers = () => {
   // local state
-  const [ContentName, setContentName] = useState("");
+  const [supplierName, setSupplierName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,7 +51,6 @@ const Suppliers = () => {
   const suppliers = useSelector((state) => state.supplier.suppliers);
   const dispatch = useDispatch();
 
-  // const [expanded, setExpanded] = useState({ [ContentName]: false });
   const [expanded, setExpanded] = useState({});
 
   // TODO
@@ -67,7 +66,7 @@ const Suppliers = () => {
 
   // reset form fields
   const resetFormFields = () => {
-    setContentName("");
+    setSupplierName("");
     setWhatsappNumber("");
     setAlternateNumber("");
   };
@@ -76,7 +75,7 @@ const Suppliers = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     if (name === "ContentName") {
-      setContentName(value);
+      setSupplierName(value);
     } else if (name === "whatsappNumber") {
       setWhatsappNumber(value);
     } else if (name === "alternateNumber") {
@@ -146,7 +145,7 @@ const Suppliers = () => {
 
     // create supplier object
     const supplier = {
-      name: ContentName,
+      name: supplierName,
       whatsappNumber: whatsappNumber,
       alternateNumber: alternateNumber ? alternateNumber : null,
     };
@@ -434,8 +433,8 @@ const Suppliers = () => {
               type="text"
               required
               onChange={handleChange}
-              name="ContentName"
-              value={ContentName}
+              name="supplierName"
+              value={supplierName}
             />
             <FormInput
               label="Whatsapp Number"
