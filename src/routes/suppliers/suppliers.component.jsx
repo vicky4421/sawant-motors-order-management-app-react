@@ -54,6 +54,9 @@ const Suppliers = () => {
   // const [expanded, setExpanded] = useState({ [supplierName]: false });
   const [expanded, setExpanded] = useState({});
 
+  // TODO
+  // add search by supplier contact
+
   // toggle expanded
   const toggleExpanded = (supplierId) => {
     setExpanded((prevExpanded) => ({
