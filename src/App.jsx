@@ -6,6 +6,7 @@ import Home from "./routes/home/home.component";
 import Products from "./routes/products/products.component";
 import Suppliers from "./routes/suppliers/suppliers.component";
 import Order from "./routes/order/order.component";
+import Categories from "./routes/categories/categories.component";
 import "./App.css";
 import Navigation from "./routes/navigation/navigation.component";
 
@@ -15,6 +16,7 @@ function App() {
       <Route path="/" element={<Navigation />}>
         <Route index element={<Home />} />
         <Route path="order" element={<Order />} />
+        <Route path="categories" element={<Categories />} />
         <Route path="products" element={<Products />} />
         <Route path="suppliers" element={<Suppliers />} />
       </Route>
