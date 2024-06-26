@@ -9,19 +9,19 @@ import { HashLoader } from "react-spinners";
 
 // imports from project
 import {
-  SupplierListContainer,
+  ContentListContainer,
   FormContainer,
-  SupplierContainer,
-  AddSupplierForm,
+  ContentContainer,
+  AddContentForm,
   SubmitButton,
-  SupplierName,
-  SupplierDiv,
+  ContentName,
+  ContentDiv,
   LogoContainerDiv,
   ContactHolderDiv,
   ContactDiv,
-  SupplierNameLogoContainer,
-  SearchBarContainer,
-  SupplierTabContainer,
+  ContentNameLogoContainer,
+  ContentSearchBarContainer,
+  ContentTabContainer,
 } from "../../routes/suppliers/suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import nothingHere from "../../assets/nothing-here.gif";
@@ -40,7 +40,7 @@ import { updateContact } from "../../store/supplier/supplier.slice";
 
 const Suppliers = () => {
   // local state
-  const [supplierName, setSupplierName] = useState("");
+  const [ContentName, setContentName] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,7 +51,7 @@ const Suppliers = () => {
   const suppliers = useSelector((state) => state.supplier.suppliers);
   const dispatch = useDispatch();
 
-  // const [expanded, setExpanded] = useState({ [supplierName]: false });
+  // const [expanded, setExpanded] = useState({ [ContentName]: false });
   const [expanded, setExpanded] = useState({});
 
   // TODO
@@ -67,7 +67,7 @@ const Suppliers = () => {
 
   // reset form fields
   const resetFormFields = () => {
-    setSupplierName("");
+    setContentName("");
     setWhatsappNumber("");
     setAlternateNumber("");
   };
@@ -75,8 +75,8 @@ const Suppliers = () => {
   // handle change
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "supplierName") {
-      setSupplierName(value);
+    if (name === "ContentName") {
+      setContentName(value);
     } else if (name === "whatsappNumber") {
       setWhatsappNumber(value);
     } else if (name === "alternateNumber") {
@@ -104,7 +104,7 @@ const Suppliers = () => {
     event.preventDefault();
 
     // validate form
-    if (!supplierName) {
+    if (!ContentName) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -146,7 +146,7 @@ const Suppliers = () => {
 
     // create supplier object
     const supplier = {
-      name: supplierName,
+      name: ContentName,
       whatsappNumber: whatsappNumber,
       alternateNumber: alternateNumber ? alternateNumber : null,
     };
@@ -316,10 +316,10 @@ const Suppliers = () => {
 
   return (
     <div>
-      <SupplierContainer>
-        <SupplierListContainer>
+      <ContentContainer>
+        <ContentListContainer>
           <h3>Suppliers</h3>
-          <SearchBarContainer>
+          <ContentSearchBarContainer>
             <FormInput
               type="text"
               name="searchTerm"
@@ -338,8 +338,8 @@ const Suppliers = () => {
                 onClick={() => setSearchTerm("")}
               />
             )}
-          </SearchBarContainer>
-          <SupplierTabContainer>
+          </ContentSearchBarContainer>
+          <ContentTabContainer>
             {isLoading ? (
               <HashLoader color="#36d7b7" loading={isLoading} size={150} />
             ) : (
@@ -348,9 +348,9 @@ const Suppliers = () => {
                   <img src={nothingHere} alt="nothing here" />
                 )}
                 {sortedSuppliers.map((supplier) => (
-                  <SupplierDiv key={supplier.id}>
-                    <SupplierNameLogoContainer>
-                      <SupplierName>{supplier.name}</SupplierName>
+                  <ContentDiv key={supplier.id}>
+                    <ContentNameLogoContainer>
+                      <ContentName>{supplier.name}</ContentName>
                       <LogoContainerDiv>
                         <img
                           src={edit}
@@ -392,7 +392,7 @@ const Suppliers = () => {
                           />
                         )}
                       </LogoContainerDiv>
-                    </SupplierNameLogoContainer>
+                    </ContentNameLogoContainer>
                     {expanded[supplier.id] && (
                       <ContactHolderDiv>
                         <ContactDiv>
@@ -420,22 +420,22 @@ const Suppliers = () => {
                         )}
                       </ContactHolderDiv>
                     )}
-                  </SupplierDiv>
+                  </ContentDiv>
                 ))}
               </>
             )}
-          </SupplierTabContainer>
-        </SupplierListContainer>
+          </ContentTabContainer>
+        </ContentListContainer>
         <FormContainer>
-          <AddSupplierForm onSubmit={handlesubmit}>
+          <AddContentForm onSubmit={handlesubmit}>
             <h3>Add Supplier</h3>
             <FormInput
               label="Supplier Name"
               type="text"
               required
               onChange={handleChange}
-              name="supplierName"
-              value={supplierName}
+              name="ContentName"
+              value={ContentName}
             />
             <FormInput
               label="Whatsapp Number"
@@ -466,9 +466,9 @@ const Suppliers = () => {
                 </AwesomeButton>
               )}
             </SubmitButton>
-          </AddSupplierForm>
+          </AddContentForm>
         </FormContainer>
-      </SupplierContainer>
+      </ContentContainer>
     </div>
   );
 };

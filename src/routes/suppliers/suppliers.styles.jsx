@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const SupplierContainer = styled.div`
+export const ContentContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -8,7 +8,7 @@ export const SupplierContainer = styled.div`
   max-height: 100vh;
 `;
 
-export const SupplierListContainer = styled.div`
+export const ContentListContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,7 +16,7 @@ export const SupplierListContainer = styled.div`
   padding: 0 1rem;
 `;
 
-export const SearchBarContainer = styled.div`
+export const ContentSearchBarContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -25,7 +25,7 @@ export const SearchBarContainer = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const SupplierTabContainer = styled.div`
+export const ContentTabContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,7 +40,7 @@ export const SupplierTabContainer = styled.div`
   }
 `;
 
-export const SupplierDiv = styled.div`
+export const ContentDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
@@ -51,7 +51,7 @@ export const SupplierDiv = styled.div`
   padding: 1rem;
 `;
 
-export const SupplierNameLogoContainer = styled.div`
+export const ContentNameLogoContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -68,7 +68,7 @@ export const LogoContainerDiv = styled.div`
   margin: auto auto;
 `;
 
-export const SupplierName = styled.h3`
+export const ContentName = styled.h3`
   font-size: 2rem;
   font-weight: bold;
   margin-left: 0;
@@ -98,7 +98,7 @@ export const FormContainer = styled.div`
   padding: 0 1rem;
 `;
 
-export const AddSupplierForm = styled.form`
+export const AddContentForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
