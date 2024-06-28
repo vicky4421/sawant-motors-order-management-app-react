@@ -8,21 +8,19 @@ import { PropagateLoader } from "react-spinners";
 import { HashLoader } from "react-spinners";
 
 // imports from project
-import {
-  ContentListContainer,
-  FormContainer,
-  ContentContainer,
-  AddContentForm,
-  SubmitButton,
-  ContentDiv,
-  LogoContainerDiv,
-  ContactHolderDiv,
-  ContactDiv,
-  ContentName,
-  ContentNameLogoContainer,
-  ContentSearchBarContainer,
-  ContentTabContainer,
-} from "../../routes/suppliers/suppliers.styles";
+import { ContentContainer } from "./suppliers.styles";
+import { ContentListContainer } from "./suppliers.styles";
+import { ContentSearchBarContainer } from "./suppliers.styles";
+import { ContentTabContainer } from "./suppliers.styles";
+import { ContentDiv } from "./suppliers.styles";
+import { ContentNameLogoContainer } from "./suppliers.styles";
+import { LogoContainerDiv } from "./suppliers.styles";
+import { ContactHolderDiv } from "./suppliers.styles";
+import { ContactDiv } from "./suppliers.styles";
+import { FormContainer } from "./suppliers.styles";
+import { AddContentForm } from "./suppliers.styles";
+import { SubmitButton } from "./suppliers.styles";
+import { ContentName } from "./suppliers.styles";
 import FormInput from "../../components/form-input/form-input.component";
 import nothingHere from "../../assets/nothing-here.gif";
 import trashpng from "../../assets/trash.png";
@@ -44,14 +42,13 @@ const Suppliers = () => {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [alternateNumber, setAlternateNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [expanded, setExpanded] = useState({});
 
   // redux state
   const error = useSelector((state) => state.supplier.error);
   const isLoading = useSelector((state) => state.supplier.isLoading);
   const suppliers = useSelector((state) => state.supplier.suppliers);
   const dispatch = useDispatch();
-
-  const [expanded, setExpanded] = useState({});
 
   // TODO
   // add search by supplier contact
@@ -74,7 +71,7 @@ const Suppliers = () => {
   // handle change
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "supplierName") {
+    if (name === "ContentName") {
       setSupplierName(value);
     } else if (name === "whatsappNumber") {
       setWhatsappNumber(value);
@@ -107,7 +104,9 @@ const Suppliers = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please enter supplier name",
+        text: "Supplier name is required",
+        timer: 2000,
+        timerProgressBar: true,
         confirmButtonColor: "#3a3a3a",
       });
       return;
@@ -115,10 +114,10 @@ const Suppliers = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please enter whatsapp number",
-        confirmButtonColor: "#3a3a3a",
-        timer: 5000,
+        text: "Whatsapp number is required",
+        timer: 2000,
         timerProgressBar: true,
+        confirmButtonColor: "#3a3a3a",
       });
       return;
     } else if (whatsappNumber.length !== 10) {
@@ -126,26 +125,26 @@ const Suppliers = () => {
         icon: "error",
         title: "Oops...",
         text: "Please enter valid whatsapp number",
-        confirmButtonColor: "#3a3a3a",
-        timer: 5000,
+        timer: 2000,
         timerProgressBar: true,
+        confirmButtonColor: "#3a3a3a",
       });
       return;
     } else if (whatsappNumber === alternateNumber) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Please enter different alternate whatsapp number",
-        confirmButtonColor: "#3a3a3a",
-        timer: 5000,
+        text: "Please enter different whatsapp number",
+        timer: 2000,
         timerProgressBar: true,
+        confirmButtonColor: "#3a3a3a",
       });
       return;
     }
 
     // create supplier object
     const supplier = {
-      name: supplierName,
+      name: ContentName,
       whatsappNumber: whatsappNumber,
       alternateNumber: alternateNumber ? alternateNumber : null,
     };
@@ -431,7 +430,6 @@ const Suppliers = () => {
             <FormInput
               label="Supplier Name"
               type="text"
-              required
               onChange={handleChange}
               name="supplierName"
               value={supplierName}
@@ -439,7 +437,6 @@ const Suppliers = () => {
             <FormInput
               label="Whatsapp Number"
               type="text"
-              required
               onChange={handleChange}
               name="whatsappNumber"
               value={whatsappNumber}
