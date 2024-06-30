@@ -5,9 +5,6 @@ import Swal from "sweetalert2";
 
 // default state
 const initialState = {
-  name: "",
-  whatsappNumber: "",
-  alternateNumber: "",
   suppliers: [],
   isLoading: false,
   error: "",
@@ -40,9 +37,8 @@ export const deleteSupplier = createAsyncThunk(
   "supplier/deleteSupplier",
   async (supplierId, { dispatch }) => {
     const response = await axios
-      .delete(`http://localhost:9000/supplier/delete/${supplierId}`)
+      .delete(`http://localhost:9000/supplier/deleteSupplier/${supplierId}`)
       .then((response) => response.data);
-    console.log("Supplier id: ", supplierId);
     dispatch(getSupplier());
     return response;
   }
@@ -88,9 +84,7 @@ const supplierSlice = createSlice({
       })
       .addCase(saveSupplier.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.name = action.payload.name;
-        state.whatsappNumber = action.payload.whatsappNumber;
-        state.alternateNumber = action.payload.alternateNumber;
+        state.suppliers = state.suppliers.concat(action.payload);
         state.error = "";
         Swal.fire({
           icon: "success",
@@ -103,9 +97,6 @@ const supplierSlice = createSlice({
       })
       .addCase(saveSupplier.rejected, (state, action) => {
         state.isLoading = false;
-        state.name = "";
-        state.whatsappNumber = "";
-        state.alternateNumber = "";
         state.error = action.error.message;
       })
       .addCase(getSupplier.pending, (state) => {
@@ -148,10 +139,14 @@ const supplierSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(updateSupplier.fulfilled, (state, action) => {
+        const supplierId = action.payload.id;
         state.isLoading = false;
-        state.name = action.payload.name;
-        state.whatsappNumber = action.payload.whatsappNumber;
-        state.alternateNumber = action.payload.alternateNumber;
+        state.suppliers = state.suppliers.map((supplier) => {
+          if (supplier.id === supplierId) {
+            return action.payload;
+          }
+          return supplier;
+        });
         state.error = "";
         Swal.fire({
           icon: "success",
@@ -170,10 +165,14 @@ const supplierSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(updateContact.fulfilled, (state, action) => {
+        const supplierId = action.payload.id;
         state.isLoading = false;
-        state.name = action.payload.name;
-        state.whatsappNumber = action.payload.whatsappNumber;
-        state.alternateNumber = action.payload.alternateNumber;
+        state.suppliers = state.suppliers.map((supplier) => {
+          if (supplier.id === supplierId) {
+            return action.payload;
+          }
+          return supplier;
+        });
         state.error = "";
         Swal.fire({
           icon: "success",
