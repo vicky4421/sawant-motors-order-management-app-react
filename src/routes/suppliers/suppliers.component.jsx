@@ -71,7 +71,7 @@ const Suppliers = () => {
   // handle change
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === "ContentName") {
+    if (name === "supplierName") {
       setSupplierName(value);
     } else if (name === "whatsappNumber") {
       setWhatsappNumber(value);
@@ -100,7 +100,7 @@ const Suppliers = () => {
     event.preventDefault();
 
     // validate form
-    if (!ContentName) {
+    if (!supplierName) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -144,7 +144,7 @@ const Suppliers = () => {
 
     // create supplier object
     const supplier = {
-      name: ContentName,
+      name: supplierName,
       whatsappNumber: whatsappNumber,
       alternateNumber: alternateNumber ? alternateNumber : null,
     };
@@ -176,7 +176,7 @@ const Suppliers = () => {
           title: "Supplier deleted successfully",
           text: "success",
           confirmButtonColor: "#3a3a3a",
-          timer: 5000,
+          timer: 2000,
           timerProgressBar: true,
         });
       } else {
@@ -185,7 +185,7 @@ const Suppliers = () => {
           title: "Supplier not deleted",
           text: "success",
           confirmButtonColor: "#3a3a3a",
-          timer: 5000,
+          timer: 2000,
           timerProgressBar: true,
         });
       }
