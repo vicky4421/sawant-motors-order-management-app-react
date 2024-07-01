@@ -5,10 +5,6 @@ import Swal from "sweetalert2";
 
 // default state
 const initialState = {
-  name: "",
-  productList: [],
-  parentCategory: "",
-  childCategories: [],
   categories: [],
   isLoading: false,
   error: "",
@@ -36,6 +32,20 @@ export const saveCategory = createAsyncThunk(
   }
 );
 
+// async delete category actions
+export const deleteCategory = createAsyncThunk(
+  "category/deleteCategory",
+  async (categoryId, { dispatch }) => {
+    const response = await axios
+      .delete(
+        `http://localhost:9000/productCategory/deleteCategory/${categoryId}`
+      )
+      .then((response) => response.data);
+    dispatch(getCategories());
+    return response;
+  }
+);
+
 // slice
 const categorySlice = createSlice({
   name: "category",
@@ -52,9 +62,7 @@ const categorySlice = createSlice({
       })
       .addCase(saveCategory.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.name = action.payload.name;
-        state.parentCategory = action.payload.parentCategory;
-        state.categories = action.payload.categories;
+        state.categories = state.categories.concat(action.payload);
         state.error = "";
         Swal.fire({
           icon: "success",
@@ -80,6 +88,29 @@ const categorySlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
         state.categories = [];
+      })
+      .addCase(deleteCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        const categoryId = action.payload.id;
+        state.isLoading = false;
+        state.categories = state.categories.filter(
+          (category) => category.id !== categoryId
+        );
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Category deleted successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
       });
   },
 });
