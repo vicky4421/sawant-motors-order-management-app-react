@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PropagateLoader } from "react-spinners";
 import Swal from "sweetalert2";
 import { HashLoader } from "react-spinners";
+import Select from "react-select";
 
 // imports from this project
 import FormInput from "../../components/form-input/form-input.component";
@@ -35,6 +36,7 @@ import {
   saveCategory,
   resetError,
   getCategories,
+  deleteCategory,
 } from "../../store/category/categorySlice";
 
 const Categories = () => {
@@ -43,12 +45,18 @@ const Categories = () => {
   const [parentCategory, setParentCategory] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [expanded, setExpanded] = useState({});
+  const [selectedParentCategory, setSelectedParentCategory] = useState(null);
 
   // redux state
   const error = useSelector((state) => state.category.error);
   const isLoading = useSelector((state) => state.category.isLoading);
   const categories = useSelector((state) => state.category.categories);
   const dispatch = useDispatch();
+
+  const categoryNamesArray = categories.map(({ categoryName }) => ({
+    value: categoryName,
+    label: categoryName,
+  }));
 
   // toggle expanded
   const toggleExpanded = (categoryId) => {
@@ -72,6 +80,15 @@ const Categories = () => {
   const resetFormFields = () => {
     setCategoryName("");
     setParentCategory("");
+  };
+
+  // Access the value from selectedParentCategory and update parentCategory state
+  const handleParentCategoryChange = (selectedParentCategory) => {
+    if (selectedParentCategory) {
+      setParentCategory(selectedParentCategory.value); // Extract the value
+    } else {
+      setParentCategory(""); // Set to empty string if nothing is selected
+    }
   };
 
   // handle submit
@@ -102,7 +119,7 @@ const Categories = () => {
 
     // create new category
     const category = {
-      category: categoryName,
+      categoryName: categoryName,
       parentCategory: parentCategory ? parentCategory : null,
     };
 
@@ -111,25 +128,63 @@ const Categories = () => {
 
     // reset form fields
     resetFormFields();
+
+    // reset selected parent category
+    setSelectedParentCategory(null);
   };
 
   // filter categories
   const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+    category.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // sort categories
   const sortedCategories = filteredCategories.sort((a, b) =>
-    a.name.localeCompare(b.name)
+    a.categoryName.localeCompare(b.categoryName)
   );
 
   // handle search
   const handleSearch = (event) => {
+    setExpanded({});
     setSearchTerm(event.target.value);
   };
 
   // handle delete
-  const handleDelete = () => {};
+  const handleDelete = (categoryId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      timer: 5000,
+      timerProgressBar: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log("categoryId", categoryId);
+        dispatch(deleteCategory(categoryId));
+        Swal.fire({
+          icon: "success",
+          title: "Category deleted successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Category not deleted",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      }
+    });
+  };
 
   // handle edit
   const handleEdit = () => {};
@@ -193,7 +248,7 @@ const Categories = () => {
               />
             )}
           </ContentSearchBarContainer>
-          <ContentTabContainer>
+          <ContentTabContainer key="category-list">
             {isLoading ? (
               <HashLoader color="#36d7b7" loading={isLoading} />
             ) : (
@@ -204,7 +259,7 @@ const Categories = () => {
                 {sortedCategories.map((category) => (
                   <ContentDiv key={category._id}>
                     <ContentNameLogoContainer>
-                      <ContentName>{category.name}</ContentName>
+                      <ContentName>{category.categoryName}</ContentName>
                       <LogoContainerDiv>
                         <img
                           src={edit}
@@ -273,12 +328,14 @@ const Categories = () => {
               name="categoryName"
               value={categoryName}
             />
-            <FormInput
-              label="Parent Category Name (if any)"
-              type="text"
-              onChange={handleChange}
-              name="parentCategory"
-              value={parentCategory}
+            <Select
+              options={categoryNamesArray}
+              value={selectedParentCategory}
+              onChange={handleParentCategoryChange}
+              placeholder="Select Parent Category"
+              isClearable
+              isSearchable
+              className="react-select-container"
             />
             <SubmitButton>
               {isLoading ? (
