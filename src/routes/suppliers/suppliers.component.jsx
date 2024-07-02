@@ -193,9 +193,9 @@ const Suppliers = () => {
   };
 
   // handle edit
-  const handleEdit = async (supplierId) => {
+  const handleUpdate = async (supplierId) => {
     const { value: formValues } = await Swal.fire({
-      title: "Edit Supplier",
+      title: "Update Supplier",
       html: `
         <input id="swal-input1" class="swal2-input" placeholder="Supplier Name">
         <input id="swal-input2" class="swal2-input" placeholder="Whatsapp Number"> 
@@ -258,6 +258,7 @@ const Suppliers = () => {
         return;
       }
 
+      // create supplier object
       const supplier = {
         id: supplierId,
         name: formValues[0],
@@ -355,7 +356,7 @@ const Suppliers = () => {
                           alt="edit"
                           height={20}
                           style={{ padding: "1rem", cursor: "pointer" }}
-                          onClick={() => handleEdit(supplier.id)}
+                          onClick={() => handleUpdate(supplier.id)}
                         />
                         <img
                           src={trashpng}
