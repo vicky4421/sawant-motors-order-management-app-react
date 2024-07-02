@@ -37,6 +37,7 @@ import {
   resetError,
   getCategories,
   deleteCategory,
+  updateCategory,
 } from "../../store/category/categorySlice";
 
 const Categories = () => {
@@ -46,6 +47,8 @@ const Categories = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [expanded, setExpanded] = useState({});
   const [selectedParentCategory, setSelectedParentCategory] = useState(null);
+
+  console.log("expanded", expanded);
 
   // redux state
   const error = useSelector((state) => state.category.error);
@@ -84,19 +87,18 @@ const Categories = () => {
 
   // Access the value from selectedParentCategory and update parentCategory state
   const handleParentCategoryChange = (selectedParentCategory) => {
-    if (selectedParentCategory) {
-      setParentCategory(selectedParentCategory.value); // Extract the value
-    } else {
-      setParentCategory(""); // Set to empty string if nothing is selected
-    }
+    return new Promise((resolve) => {
+      setSelectedParentCategory(selectedParentCategory);
+      resolve(setParentCategory(selectedParentCategory?.value)); // Resolve the promise after state update
+    });
   };
 
   // handle submit
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (!categoryName) {
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Category name is required",
@@ -106,7 +108,7 @@ const Categories = () => {
       });
       return;
     } else if (categoryName === parentCategory) {
-      Swal.fire({
+      await Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Parent category cannot be same as category",
@@ -117,6 +119,8 @@ const Categories = () => {
       return;
     }
 
+    await handleParentCategoryChange(selectedParentCategory);
+
     // create new category
     const category = {
       categoryName: categoryName,
@@ -124,9 +128,9 @@ const Categories = () => {
     };
 
     // dispatch action
-    dispatch(saveCategory(category));
+    await dispatch(saveCategory(category));
 
-    // reset form fields
+    // reset form
     resetFormFields();
 
     // reset selected parent category
@@ -186,8 +190,74 @@ const Categories = () => {
     });
   };
 
-  // handle edit
-  const handleEdit = () => {};
+  // handle update
+  const handleUpdate = async (categoryId) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Update Category",
+      html: `
+          <input id="swal-input1" class="swal2-input" placeholder="Category Name"> <br> <br>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [document.getElementById("swal-input1").value];
+      },
+    });
+
+    if (formValues) {
+      // validate form
+      if (!formValues[0]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Category name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+    }
+
+    const categoryNamesObject = categoryNamesArray.reduce((acc, category) => {
+      acc[category.label] = category.value;
+      acc["none of the above"] = "none of the above";
+      return acc;
+    }, {});
+
+    var { value: parent } = await Swal.fire({
+      title: "Select Parent Category",
+      input: "select",
+      inputOptions: categoryNamesObject,
+      inputPlaceholder: "Select Parent Category",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    });
+
+    if (parent === "NONE OF THE ABOVE") {
+      parent = null;
+    }
+
+    console.log("formValues", formValues[0]);
+    console.log("parent", parent);
+
+    // create new category
+    const category = {
+      id: categoryId,
+      categoryName: formValues[0],
+      parentCategory: parent,
+    };
+
+    console.log("category", category);
+    console.log("sortedCategories", sortedCategories);
+
+    // dispatch action
+    const updatedCategory = await dispatch(updateCategory(category));
+    console.log("updatedCategory", updatedCategory);
+  };
+
+  console.log("sortedCategories after updating category", sortedCategories);
 
   // get all categories
   useEffect(() => {
@@ -266,7 +336,7 @@ const Categories = () => {
                           alt="edit"
                           height={20}
                           style={{ padding: "1rem", cursor: "pointer" }}
-                          onClick={() => handleEdit(category.id)}
+                          onClick={() => handleUpdate(category.id)}
                         />
                         <img
                           src={trashpng}
