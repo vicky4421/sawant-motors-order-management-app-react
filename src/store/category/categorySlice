@@ -46,6 +46,18 @@ export const deleteCategory = createAsyncThunk(
   }
 );
 
+// async update category actions
+export const updateCategory = createAsyncThunk(
+  "category/updateCategory",
+  async (category, { dispatch }) => {
+    const response = await axios
+      .put(`http://localhost:9000/productCategory`, category)
+      .then((response) => response.data);
+    dispatch(getCategories());
+    return response;
+  }
+);
+
 // slice
 const categorySlice = createSlice({
   name: "category",
@@ -109,6 +121,32 @@ const categorySlice = createSlice({
         });
       })
       .addCase(deleteCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+      .addCase(updateCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCategory.fulfilled, (state, action) => {
+        const { categoryId, parentCategory } = action.payload.id;
+        state.isLoading = false;
+        state.categories = state.categories.map((category) => {
+          if (category.id === categoryId) {
+            return { ...category, parentCategory };
+          }
+          return category;
+        });
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Category updated successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      })
+      .addCase(updateCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
