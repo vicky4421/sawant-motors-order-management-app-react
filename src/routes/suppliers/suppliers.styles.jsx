@@ -69,7 +69,7 @@ export const LogoContainerDiv = styled.div`
 `;
 
 export const ContentName = styled.h3`
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin-left: 0;
   width: 50%;

@@ -192,7 +192,7 @@ const Suppliers = () => {
     });
   };
 
-  // handle edit
+  // handle update
   const handleUpdate = async (supplierId) => {
     const { value: formValues } = await Swal.fire({
       title: "Update Supplier",
@@ -402,10 +402,15 @@ const Suppliers = () => {
                         </ContactDiv>
                         {supplier.alternateNumber && (
                           <ContactDiv>
-                            <p style={{ marginRight: "5rem" }}>
+                            <p
+                              style={{
+                                marginRight: "5rem",
+                                fontSize: "1.5rem",
+                              }}
+                            >
                               Alternate Number
                             </p>
-                            <p style={{ color: "blue" }}>
+                            <p style={{ color: "blue", fontSize: "1.5rem" }}>
                               {supplier.alternateNumber}
                             </p>
                             <img
