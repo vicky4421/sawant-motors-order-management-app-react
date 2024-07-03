@@ -38,7 +38,7 @@ import {
   getCategories,
   deleteCategory,
   updateCategory,
-} from "../../store/category/categorySlice";
+} from "../../store/category/category.slice";
 
 const Categories = () => {
   // local state
@@ -257,8 +257,6 @@ const Categories = () => {
     console.log("updatedCategory", updatedCategory);
   };
 
-  console.log("sortedCategories after updating category", sortedCategories);
-
   // get all categories
   useEffect(() => {
     dispatch(getCategories());
@@ -375,8 +373,12 @@ const Categories = () => {
                     {expanded[category.id] && (
                       <ContactHolderDiv>
                         <ContactDiv>
-                          <p style={{ marginRight: "5rem" }}>Parent Category</p>
-                          <p style={{ color: "blue" }}>
+                          <p
+                            style={{ marginRight: "5rem", fontSize: "1.5rem" }}
+                          >
+                            Parent Category
+                          </p>
+                          <p style={{ color: "blue", fontSize: "1.5rem" }}>
                             {category.parentCategory}
                           </p>
                         </ContactDiv>
