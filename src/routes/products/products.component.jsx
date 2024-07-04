@@ -36,6 +36,7 @@ import {
   getProducts,
   resetError,
   saveProduct,
+  deleteProduct,
 } from "../../store/product/product.slice";
 import { getCategories } from "../../store/category/category.slice";
 import { getUnits } from "../../store/unit/unit.slice";
@@ -81,10 +82,6 @@ const Products = () => {
       resolve(selectedCategory?.value); // Resolve the promise after state update
     });
   };
-
-  console.log("selectedUnit", selectedUnit);
-
-  console.log("selectedCategory", selectedCategory);
 
   // filter products
   const filteredProducts = products.filter((product) =>
@@ -170,6 +167,43 @@ const Products = () => {
     // reset selected unit and category
     setSelectedUnit(null);
     setSelectedCategory(null);
+
+    // set expanded
+    setExpanded({});
+  };
+
+  // handle delete
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteProduct(id));
+        Swal.fire({
+          icon: "success",
+          title: "Supplier deleted successfully",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Supplier not deleted",
+          text: "success",
+          confirmButtonColor: "#3a3a3a",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      }
+    });
   };
 
   // get all products
@@ -194,6 +228,9 @@ const Products = () => {
         icon: "error",
         title: "Oops...",
         text: error,
+        timer: 2000,
+        timerProgressBar: true,
+        confirmButtonColor: "#3a3a3a",
       });
       dispatch(resetError());
     }
@@ -248,6 +285,7 @@ const Products = () => {
                           alt="delete"
                           height={20}
                           style={{ padding: "1rem", cursor: "pointer" }}
+                          onClick={() => handleDelete(product.id)}
                         />
                         {expanded[product.id] ? (
                           <img
