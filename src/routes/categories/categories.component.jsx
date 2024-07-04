@@ -48,8 +48,6 @@ const Categories = () => {
   const [expanded, setExpanded] = useState({});
   const [selectedParentCategory, setSelectedParentCategory] = useState(null);
 
-  console.log("expanded", expanded);
-
   // redux state
   const error = useSelector((state) => state.category.error);
   const isLoading = useSelector((state) => state.category.isLoading);
@@ -128,7 +126,7 @@ const Categories = () => {
     };
 
     // dispatch action
-    await dispatch(saveCategory(category));
+    dispatch(saveCategory(category));
 
     // reset form
     resetFormFields();
@@ -239,18 +237,12 @@ const Categories = () => {
       parent = null;
     }
 
-    console.log("formValues", formValues[0]);
-    console.log("parent", parent);
-
     // create new category
     const category = {
       id: categoryId,
       categoryName: formValues[0],
       parentCategory: parent,
     };
-
-    console.log("category", category);
-    console.log("sortedCategories", sortedCategories);
 
     // dispatch action
     const updatedCategory = await dispatch(updateCategory(category));
@@ -265,28 +257,14 @@ const Categories = () => {
   // handle error
   useEffect(() => {
     if (error) {
-      if (
-        error === "Request failed with status code 409" ||
-        error === "Request failed with status code 400"
-      ) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Category already exists!",
-          confirmButtonColor: "#3a3a3a",
-          timer: 3000,
-          timerProgressBar: true,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: error,
-          confirmButtonColor: "#3a3a3a",
-          timer: 3000,
-          timerProgressBar: true,
-        });
-      }
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error,
+        confirmButtonColor: "#3a3a3a",
+        timer: 3000,
+        timerProgressBar: true,
+      });
       dispatch(resetError());
     }
   }, [error, dispatch]);
