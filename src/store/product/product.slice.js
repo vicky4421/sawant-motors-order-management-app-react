@@ -1,7 +1,7 @@
 // imports from third party libraries
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 
 // default state
 const initialState = {
@@ -16,6 +16,18 @@ export const getProducts = createAsyncThunk("product/getProduct", async () => {
     .get("http://localhost:9000/product/allProducts")
     .then((response) => response.data);
 });
+
+// async save product actions
+export const saveProduct = createAsyncThunk(
+  "product/saveProduct",
+  async (product, { dispatch }) => {
+    const response = await axios
+      .post("http://localhost:9000/product", product)
+      .then((response) => response.data);
+    dispatch(getProducts());
+    return response;
+  }
+);
 
 // slice
 const productSlice = createSlice({
@@ -39,6 +51,33 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
         state.products = [];
+      })
+      .addCase(saveProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(saveProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.products = state.products.concat(action.payload);
+        state.error = "";
+        Swal.fire({
+          icon: "success",
+          title: "Product added successfully",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+      })
+      .addCase(saveProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: action.error.message,
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
       });
   },
 });
