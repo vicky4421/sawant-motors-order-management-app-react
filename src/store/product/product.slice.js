@@ -29,6 +29,18 @@ export const saveProduct = createAsyncThunk(
   }
 );
 
+// async delete product actions
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (id, { dispatch }) => {
+    const response = await axios
+      .delete(`http://localhost:9000/product/deleteProduct/${id}`)
+      .then((response) => response.data);
+    dispatch(getProducts());
+    return response;
+  }
+);
+
 // slice
 const productSlice = createSlice({
   name: "product",
@@ -68,6 +80,36 @@ const productSlice = createSlice({
         });
       })
       .addCase(saveProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: action.error.message,
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        const productId = action.payload.id;
+        state.isLoading = false;
+        state.error = "";
+        state.products = state.products.filter(
+          (product) => product.id !== productId
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Product deleted successfully",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         Swal.fire({
