@@ -281,6 +281,7 @@ const Suppliers = () => {
     dispatch(updateContact(supplier));
   };
 
+  // handle error
   useEffect(() => {
     if (error) {
       if (
