@@ -125,6 +125,9 @@ const Products = () => {
   // handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
+    await handleUnitChange(selectedUnit);
+    await handleCategoryChange(selectedCategory);
+
     if (!productName) {
       Swal.fire({
         icon: "error",
@@ -147,9 +150,6 @@ const Products = () => {
       return;
     }
 
-    await handleUnitChange(selectedUnit);
-    await handleCategoryChange(selectedCategory);
-
     // create new product
     const newProduct = {
       name: productName,
@@ -157,8 +157,6 @@ const Products = () => {
       unit: selectedUnit.value,
       category: selectedCategory.value,
     };
-
-    console.log("newProduct", newProduct);
 
     // dispatch save product
     dispatch(saveProduct(newProduct));
@@ -206,6 +204,22 @@ const Products = () => {
     });
   };
 
+  // handle error
+  useEffect(() => {
+    if (error) {
+      console.log("error", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error,
+        timer: 2000,
+        timerProgressBar: true,
+        confirmButtonColor: "#3a3a3a",
+      });
+      dispatch(resetError());
+    }
+  }, [error, dispatch]);
+
   // get all products
   useEffect(() => {
     dispatch(getProducts());
@@ -220,21 +234,6 @@ const Products = () => {
   useEffect(() => {
     dispatch(getUnits());
   }, [dispatch]);
-
-  // handle error
-  useEffect(() => {
-    if (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: error,
-        timer: 2000,
-        timerProgressBar: true,
-        confirmButtonColor: "#3a3a3a",
-      });
-      dispatch(resetError());
-    }
-  }, [error, dispatch]);
 
   return (
     <div>

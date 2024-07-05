@@ -82,14 +82,6 @@ const productSlice = createSlice({
       .addCase(saveProduct.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: action.error.message,
-          timer: 2000,
-          timerProgressBar: true,
-          confirmButtonColor: "#3a3a3a",
-        });
       })
       .addCase(deleteProduct.pending, (state) => {
         state.isLoading = true;
