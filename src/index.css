@@ -86,8 +86,15 @@ body::-webkit-scrollbar {
 }
 
 .react-select-container-product {
-  width: 100%;
+  width: 85%;
   margin-bottom: 4.5rem;
   margin-top: 2rem;
   z-index: 3;
+}
+
+.save-unit-img {
+  margin-top: -2.8rem;
+  border: 1px solid #3a3a3a;
+  background-color: #3a3a3a;
+  border-radius: 50%;
 }
