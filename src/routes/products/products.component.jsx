@@ -25,11 +25,14 @@ import {
   LogoContainerDiv,
   SubmitButton,
 } from "../suppliers/suppliers.styles";
+import { UnitContainer } from "./products.styles";
 import nothingHere from "../../assets/nothing-here.gif";
 import edit from "../../assets/edit.png";
 import trashpng from "../../assets/trash.png";
 import arrow from "../../assets/arrow.png";
 import crosspng from "../../assets/cross.png";
+import collapse from "../../assets/collapse.png";
+import expand from "../../assets/expand.png";
 
 // imports from this project state
 import {
@@ -37,9 +40,11 @@ import {
   resetError,
   saveProduct,
   deleteProduct,
+  updateProduct,
 } from "../../store/product/product.slice";
 import { getCategories } from "../../store/category/category.slice";
 import { getUnits } from "../../store/unit/unit.slice";
+import { saveUnit, updateUnit } from "../../store/unit/unit.slice";
 import FormInput from "../../components/form-input/form-input.component";
 
 const Products = () => {
@@ -84,8 +89,10 @@ const Products = () => {
   };
 
   // filter products
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.partNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // sort products
@@ -103,6 +110,7 @@ const Products = () => {
 
   // handle search
   const handleSearch = (event) => {
+    setExpanded({});
     setSearchTerm(event.target.value);
   };
 
@@ -204,6 +212,209 @@ const Products = () => {
     });
   };
 
+  // handle update
+  const handleUpdate = async (id) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Update Product",
+      html: `
+          <input id="swal-input1" class="swal2-input" placeholder="Product Name"> <br> <br>
+          <input id="swal-input2" class="swal2-input" placeholder="Part Number"> <br> <br>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+        ];
+      },
+    });
+
+    if (formValues) {
+      // validate form
+      if (!formValues[0]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Product name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+
+      if (formValues) {
+        // validate form
+        if (!formValues[1]) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Part Number is required",
+            timer: 2000,
+            timerProgressBar: true,
+            confirmButtonColor: "#3a3a3a",
+          });
+          return;
+        }
+      }
+    }
+
+    const productUnitsObject = unitNamesArray.reduce((acc, unit) => {
+      acc[unit.label] = unit.value;
+      return acc;
+    }, {});
+
+    const productCategoryObject = categoryNamesArray.reduce((acc, category) => {
+      acc[category.label] = category.value;
+      return acc;
+    }, {});
+
+    console.log("productUnitsObject", productUnitsObject);
+
+    console.log("productCategoryObject", productCategoryObject);
+
+    var { value: selectedUnit } = await Swal.fire({
+      title: "Select Unit",
+      input: "select",
+      inputOptions: productUnitsObject,
+      inputPlaceholder: "Select Unit",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    });
+
+    var { value: selectedCategory } = await Swal.fire({
+      title: "Select Category",
+      input: "select",
+      inputOptions: productCategoryObject,
+      inputPlaceholder: "Select Category",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    });
+
+    console.log("unit", selectedUnit);
+
+    console.log("category", selectedCategory);
+
+    const updatedProduct = {
+      id: id,
+      name: formValues[0],
+      partNumber: formValues[1],
+      unit: selectedUnit,
+      category: selectedCategory,
+    };
+
+    // dispatch update product
+    dispatch(updateProduct(updatedProduct));
+  };
+
+  // handle save unit
+  const handleSaveUnit = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Add Unit",
+      html: `
+          <input id="swal-input1" class="swal2-input" placeholder="Unit Name"> <br> <br>
+          <input id="swal-input2" class="swal2-input" placeholder="Short Name"> <br> <br>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+        ];
+      },
+    });
+    if (formValues) {
+      // validate form
+      if (!formValues[0]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Unit name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+
+      if (!formValues[1]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Short name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+    }
+
+    // create new unit
+    const newUnit = {
+      name: formValues[0],
+      shortName: formValues[1],
+    };
+
+    // dispatch add unit
+    dispatch(saveUnit(newUnit));
+  };
+
+  // handle update unit
+  const handleUpdateUnit = async (unitId) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Update Unit",
+      html: `
+          <input id="swal-input1" class="swal2-input" placeholder="Unit Name"> <br> <br>
+          <input id="swal-input2" class="swal2-input" placeholder="Short Name"> <br> <br>
+      `,
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+        ];
+      },
+    });
+    if (formValues) {
+      // validate form
+      if (!formValues[0]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Unit name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+      if (!formValues[1]) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Short name is required",
+          timer: 2000,
+          timerProgressBar: true,
+          confirmButtonColor: "#3a3a3a",
+        });
+        return;
+      }
+    }
+    // create new unit
+    const newUnit = {
+      id: unitId,
+      name: formValues[0],
+      shortName: formValues[1],
+    };
+    // dispatch update unit
+    dispatch(updateUnit(newUnit));
+  };
+
   // handle error
   useEffect(() => {
     if (error) {
@@ -223,7 +434,7 @@ const Products = () => {
   // get all products
   useEffect(() => {
     dispatch(getProducts());
-  }, [dispatch]);
+  }, [units, dispatch]);
 
   // get all categories
   useEffect(() => {
@@ -246,7 +457,7 @@ const Products = () => {
               name="searchTerm"
               value={searchTerm}
               onChange={handleSearch}
-              label="Search Products"
+              label="Search Products by Name or Part Number"
               required
               style={{ width: "90%" }}
             />
@@ -268,6 +479,28 @@ const Products = () => {
                 {products.length === 0 && (
                   <img src={nothingHere} alt="nothing here" />
                 )}
+                <div>
+                  <img
+                    src={collapse}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => setExpanded({})}
+                  />
+                  <img
+                    src={expand}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => {
+                      const newExpanded = {};
+                      products.forEach((product) => {
+                        newExpanded[product.id] = true;
+                      });
+                      setExpanded(newExpanded);
+                    }}
+                  />
+                </div>
                 {sortedProducts.map((product) => (
                   <ContentDiv key={product.id}>
                     <ContentNameLogoContainer>
@@ -278,6 +511,7 @@ const Products = () => {
                           alt="edit"
                           height={20}
                           style={{ padding: "1rem", cursor: "pointer" }}
+                          onClick={() => handleUpdate(product.id)}
                         />
                         <img
                           src={trashpng}
@@ -324,6 +558,17 @@ const Products = () => {
                           <p style={{ color: "blue" }}>
                             {product.unit.shortName}
                           </p>
+                          <img
+                            src={edit}
+                            alt="edit"
+                            height={15}
+                            style={{
+                              padding: "1rem",
+                              cursor: "pointer",
+                              marginLeft: "1rem",
+                            }}
+                            onClick={() => handleUpdateUnit(product.unit.id)}
+                          />
                         </ContactDiv>
                         <ContactDiv>
                           <p style={{ marginRight: "2rem" }}>Category</p>
@@ -358,16 +603,26 @@ const Products = () => {
               value={partNumber}
               // style={{ marginBottom: "-3rem" }}
             />
-            <Select
-              options={unitNamesArray}
-              value={selectedUnit}
-              onChange={handleUnitChange}
-              placeholder="Select Unit"
-              isClearable
-              isSearchable
-              className="react-select-container-product"
-              styles={{ zIndex: 3 }}
-            />
+            <UnitContainer>
+              <Select
+                options={unitNamesArray}
+                value={selectedUnit}
+                onChange={handleUnitChange}
+                placeholder="Select Unit"
+                isClearable
+                isSearchable
+                className="react-select-container-product"
+                styles={{ zIndex: 3 }}
+              />
+              <img
+                src={crosspng}
+                alt="add"
+                height={20}
+                style={{ padding: "1rem", cursor: "pointer", rotate: "45deg" }}
+                className="save-unit-img"
+                onClick={handleSaveUnit}
+              />
+            </UnitContainer>
             <Select
               options={categoryNamesArray}
               value={selectedCategory}
