@@ -27,6 +27,8 @@ import trashpng from "../../assets/trash.png";
 import arrow from "../../assets/arrow.png";
 import edit from "../../assets/edit.png";
 import crosspng from "../../assets/cross.png";
+import collapse from "../../assets/collapse.png";
+import expand from "../../assets/expand.png";
 
 // imports from this project state
 import { saveSupplier } from "../../store/supplier/supplier.slice";
@@ -82,12 +84,15 @@ const Suppliers = () => {
 
   // handle search
   const handleSearch = (event) => {
+    setExpanded({});
     setSearchTerm(event.target.value);
   };
 
   // filter suppliers
-  const filteredSuppliers = suppliers.filter((supplier) =>
-    supplier.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSuppliers = suppliers.filter(
+    (supplier) =>
+      supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      supplier.whatsappNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // sort suppliers
@@ -325,7 +330,7 @@ const Suppliers = () => {
               name="searchTerm"
               value={searchTerm}
               onChange={handleSearch}
-              label="Search Supplier"
+              label="Search Supplier by Name or Whatsapp Number"
               required
               style={{ width: "90%" }}
             />
@@ -347,6 +352,28 @@ const Suppliers = () => {
                 {suppliers.length === 0 && (
                   <img src={nothingHere} alt="nothing here" />
                 )}
+                <div>
+                  <img
+                    src={collapse}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => setExpanded({})}
+                  />
+                  <img
+                    src={expand}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => {
+                      const newExpanded = {};
+                      suppliers.forEach((product) => {
+                        newExpanded[product.id] = true;
+                      });
+                      setExpanded(newExpanded);
+                    }}
+                  />
+                </div>
                 {sortedSuppliers.map((supplier) => (
                   <ContentDiv key={supplier.id}>
                     <ContentNameLogoContainer>
