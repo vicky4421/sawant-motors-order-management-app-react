@@ -30,6 +30,8 @@ import nothingHere from "../../assets/nothing-here.gif";
 import trashpng from "../../assets/trash.png";
 import edit from "../../assets/edit.png";
 import arrow from "../../assets/arrow.png";
+import collapse from "../../assets/collapse.png";
+import expand from "../../assets/expand.png";
 
 // imports from this project state
 import {
@@ -245,7 +247,7 @@ const Categories = () => {
     };
 
     // dispatch action
-    const updatedCategory = await dispatch(updateCategory(category));
+    const updatedCategory = dispatch(updateCategory(category));
     console.log("updatedCategory", updatedCategory);
   };
 
@@ -302,6 +304,28 @@ const Categories = () => {
                 {categories.length === 0 && (
                   <img src={nothingHere} alt="nothing here" />
                 )}
+                <div>
+                  <img
+                    src={collapse}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => setExpanded({})}
+                  />
+                  <img
+                    src={expand}
+                    alt="add"
+                    height={20}
+                    style={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => {
+                      const newExpanded = {};
+                      categories.forEach((product) => {
+                        newExpanded[product.id] = true;
+                      });
+                      setExpanded(newExpanded);
+                    }}
+                  />
+                </div>
                 {sortedCategories.map((category) => (
                   <ContentDiv key={category._id}>
                     <ContentNameLogoContainer>
